@@ -1,0 +1,16 @@
+# Requires: PyTorch + PyTorch Geometric
+# Weights: HuggingFace iLearn-Lab/MM21-OCMCF (check license before commercial use)
+
+def recommend_outfit(input_items, candidate_items, model, top_k=3):
+    """
+    input_items: user's existing items, e.g. ['white shirt', 'black trousers']
+    candidate_items: candidate pool (from your own DB or a compliant API)
+    Returns: top_k candidates with the highest compatibility scores
+    """
+    scored = []
+    for item in candidate_items:
+        outfit = input_items + [item]
+        score = model.predict_compatibility(outfit)  # model outputs a compatibility score
+        scored.append((item, score))
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:top_k]
